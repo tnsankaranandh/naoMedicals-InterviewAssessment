@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "grunt"
+    "build": "GENERATE_SOURCEMAP=false react-scripts build"
   },
   "devDependencies": {
     "grunt": "^1.6.1",
