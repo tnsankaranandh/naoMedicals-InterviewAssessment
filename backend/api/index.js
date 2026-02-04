@@ -34,7 +34,7 @@ const corsOptions = {
     	console.log('origin ', origin);
         // Check if the requesting origin is in the allowedOrigins array
         // or if the origin is undefined (e.g., for direct server requests or Postman)
-        if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        if (allowedOrigins.indexOf(origin) > -1) {
             callback(null, true); // Allow the request
         } else {
             callback(new Error('Not allowed by CORS')); // Deny the request
