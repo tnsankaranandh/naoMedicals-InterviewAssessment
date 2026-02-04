@@ -38,7 +38,7 @@ const corsOptions = {
           console.log('allowedOrigins includes origin');
             callback(null, true); // Allow the request
         } else {
-          console.log('Not allowed by CORS'););
+          console.log('Not allowed by CORS');
             callback(new Error('Not allowed by CORS')); // Deny the request
         }
     },
