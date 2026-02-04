@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "build": "grunt",
     "vercel-build": "echo 'vercel build for backend'"
   },
   "dependencies": {
