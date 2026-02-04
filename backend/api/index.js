@@ -60,12 +60,12 @@ const connectDBFilter = async (req, res, next) => {
 
 app.post('/auth/login', connectDBFilter, AuthRoute.login);
 
-app.all('*', (req, res) => res.redirect('/'));
+// app.all('*', (req, res) => res.redirect('/'));
 
-app.use(function(error, request, response, next) {
-	console.error(error);
-  response.status(500).send(error.message || 'Internal Server Error');
-});
+// app.use(function(error, request, response, next) {
+// 	console.error(error);
+//   response.status(500).send(error.message || 'Internal Server Error');
+// });
 
 app.listen(5000, () => { console.log('Server ready on port 5000.')} );
 
