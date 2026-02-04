@@ -68,6 +68,12 @@ const connectDBFilter = async (req, res, next) => {
 
 app.post('/api/auth/login', connectDBFilter, AuthRoute.login);
 
+app.all('*', (req, res) => {
+  console.log('in all routee');
+  console.log(req);
+  res.status(404).send({ message: 'Route not found' });
+});
+
 // For local development
 if (process.env.NODE_ENV !== 'production') {
   app.listen(5000, () => { console.log('Server ready on port 5000.'); });
