@@ -62,7 +62,7 @@ const connectDBFilter = async (req, res, next) => {
 	}
 };
 
-app.post('/auth/login', connectDBFilter, AuthRoute.login);
+app.post('/api/auth/login', connectDBFilter, AuthRoute.login);
 
 // app.all('*', (req, res) => res.redirect('/'));
 
