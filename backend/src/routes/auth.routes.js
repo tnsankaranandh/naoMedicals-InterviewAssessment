@@ -79,6 +79,8 @@ router.post("/login", async (req, res) => {
       }
     });
   } catch (err) {
+    console.log('error while executing user mongodb query');
+    console.error(err);
     res.status(500).json({ message: "Login failed", error: err.message });
   }
 });
