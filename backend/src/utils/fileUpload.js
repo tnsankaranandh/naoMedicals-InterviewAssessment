@@ -1,15 +1,9 @@
 const multer = require("multer");
 const path = require("path");
-const { v4: uuidv4 } = require("uuid");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads/audio");
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${uuidv4()}${path.extname(file.originalname)}`);
-  }
-});
+// Use memory storage for Vercel (ephemeral filesystem)
+// For production, upload to cloud storage (S3, etc.)
+const storage = multer.memoryStorage();
 
 const audioFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("audio/")) {
@@ -21,7 +15,8 @@ const audioFilter = (req, file, cb) => {
 
 const uploadAudio = multer({
   storage,
-  fileFilter: audioFilter
+  fileFilter: audioFilter,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB max file size
 });
 
 module.exports = uploadAudio;

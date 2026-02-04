@@ -36,24 +36,35 @@ router.post(
   auth,
   uploadAudio.single("audio"),
   async (req, res) => {
-    const { conversationId } = req.body;
+    try {
+      const { conversationId } = req.body;
 
-    const audioUrl = `/uploads/audio/${req.file.filename}`;
+      if (!req.file) {
+        return res.status(400).json({ error: "No audio file provided" });
+      }
 
-    const message = await Message.create({
-      conversationId,
-      senderId: req.user.userId,
-      senderRole: req.user.role,
-      type: "audio",
-      audioUrl
-    });
+      // For Vercel: store base64 or use external cloud storage (S3, etc.)
+      // This example stores metadata; implement S3 upload for production
+      const audioData = req.file.buffer.toString('base64');
+      const audioUrl = `data:${req.file.mimetype};base64,${audioData}`;
 
-    await Conversation.findByIdAndUpdate(conversationId, {
-      lastMessage: "🎙 Voice message",
-      updatedAt: new Date()
-    });
+      const message = await Message.create({
+        conversationId,
+        senderId: req.user.userId,
+        senderRole: req.user.role,
+        type: "audio",
+        audioUrl
+      });
 
-    res.status(201).json(message);
+      await Conversation.findByIdAndUpdate(conversationId, {
+        lastMessage: "🎙 Voice message",
+        updatedAt: new Date()
+      });
+
+      res.status(201).json(message);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   }
 );
 
