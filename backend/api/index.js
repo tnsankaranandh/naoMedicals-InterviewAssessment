@@ -12,6 +12,6 @@ const connectDB = require('../src/config/db');
   }
 })();
 
-app.use("/api/auth/login", require("./src/routes/auth.routes").login);
+app.use("/api/auth/login", require("../src/routes/auth.routes").login);
 
 module.exports = serverless(app);
