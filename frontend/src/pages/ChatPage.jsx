@@ -6,6 +6,7 @@ import PatientList from "../components/PatientList";
 import ChatBox from "../components/Chat/ChatBox";
 import SearchBar from "../components/SearchBar";
 import SummaryModal from "../components/SummaryModal";
+import { Button } from "@mui/material";
 
 export default function MessageBubble({ message, isOwn }) {
   const { user } = useContext(AuthContext);
@@ -54,7 +55,7 @@ export default function MessageBubble({ message, isOwn }) {
                 onChange={setSearch}
                 onClear={() => setSearch("")}
               />
-              <button onClick={handleOpenSummary} style={{ height: 40 }}>AI Summary</button>
+              <Button variant="contained" onClick={handleOpenSummary} style={{ height: 40 }}>AI Summary</Button>
             </div>
             <ChatBox conversation={conversation} search={search} />
             <SummaryModal

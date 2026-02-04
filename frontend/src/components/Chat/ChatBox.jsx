@@ -3,6 +3,7 @@ import api from "../../services/api";
 import { socket } from "../../services/socket";
 import MessageBubble from "./MessageBubble";
 import AudioRecorder from "./AudioRecorder";
+import { Button, TextField } from "@mui/material";
 
 export default function ChatBox({ conversation, search }) {
   const [messages, setMessages] = useState([]);
@@ -57,8 +58,14 @@ export default function ChatBox({ conversation, search }) {
       ) : (
         messages.map(m => <MessageBubble key={m._id} message={m} highlight={search}/>)
       )}
-      <input value={text} onChange={e => setText(e.target.value)} />
-      <button onClick={sendText}>Send</button>
+      <TextField
+        fullWidth
+        size="small"
+        placeholder="Type a message"
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <Button variant="contained" onClick={sendText}>Send</Button>
       <AudioRecorder conversationId={conversation._id} />
     </div>
   );

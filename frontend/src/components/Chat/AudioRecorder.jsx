@@ -3,7 +3,7 @@ import api from "../../services/api";
 import { socket } from "../../services/socket";
 import { useContext } from "react";
 import { AuthContext } from "../../context/AuthContext";
-
+import { Button } from "@mui/material";
 
 export default function AudioRecorder({ conversationId }) {
   const { user } = useContext(AuthContext);
@@ -40,8 +40,8 @@ export default function AudioRecorder({ conversationId }) {
 
   return (
     <>
-      <button onClick={start}>🎙 Start</button>
-      <button onClick={stop}>⏹ Stop</button>
+      <Button  variant="contained" onClick={start}> 🎙 Start Recording</Button>
+      <Button  variant="contained" onClick={stop}> ⏹ Stop Recording</Button>
     </>
   );
 }
