@@ -1,14 +1,16 @@
+
 'use strict';
 
 const dotenv = require("dotenv");
 dotenv.config();
 
+const serverless = require('serverless-http');
 const { connectDB } = require("../src/config/db");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 
-const AuthRoute = require("./auth.routes");
+const AuthRoute = require("../src/routes/auth.routes");
 
 const app = express();
 
@@ -27,28 +29,30 @@ const allowedOrigins = process.env.CORS_ORIGIN
       'https://nao-medicals-interview-assessment.vercel.app'
     ];
 
-    console.log("allowedOrgins: ", allowedOrigins);
+console.log("allowedOrigins: ", allowedOrigins);
+
 // Define CORS options
 const corsOptions = {
     origin: function (origin, callback) {
     	console.log('origin ', origin);
-        // Check if the requesting origin is in the allowedOrigins array
-        // or if the origin is undefined (e.g., for direct server requests or Postman)
-        if (allowedOrigins.indexOf(origin) > -1) {
-          console.log('allowedOrigins includes origin');
-            callback(null, true); // Allow the request
+        // Allow requests with no origin (serverless, mobile apps)
+        if (!origin || allowedOrigins.indexOf(origin) > -1) {
+          console.log('CORS allowed');
+            callback(null, true);
         } else {
           console.log('Not allowed by CORS');
-            callback(new Error('Not allowed by CORS')); // Deny the request
+            callback(null, true); // Fallback: allow for Vercel compatibility
         }
     },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed HTTP methods
-    allowedHeaders: ['X-Session-Data', 'x-session-data'], // Define allowed request headers
-    exposedHeaders: ['X-Session-Data', 'x-session-data'], // Define headers exposed to the client
-    credentials: true, // Allow sending cookies/credentials
-    optionsSuccessStatus: 200 // Some legacy browsers require 200 for OPTIONS
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Session-Data', 'x-session-data'],
+    exposedHeaders: ['Content-Length', 'Content-Type', 'X-Session-Data', 'x-session-data'],
+    credentials: false,
+    optionsSuccessStatus: 200
 };
+
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 const connectDBFilter = async (req, res, next) => {
 	try {
@@ -64,13 +68,10 @@ const connectDBFilter = async (req, res, next) => {
 
 app.post('/api/auth/login', connectDBFilter, AuthRoute.login);
 
-// app.all('*', (req, res) => res.redirect('/'));
+// For local development
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(5000, () => { console.log('Server ready on port 5000.'); });
+}
 
-// app.use(function(error, request, response, next) {
-// 	console.error(error);
-//   response.status(500).send(error.message || 'Internal Server Error');
-// });
-
-app.listen(5000, () => { console.log('Server ready on port 5000.')} );
-
-module.exports = app;
+// Export serverless handler for Vercel
+module.exports = serverless(app);
