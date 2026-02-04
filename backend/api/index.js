@@ -35,8 +35,10 @@ const corsOptions = {
         // Check if the requesting origin is in the allowedOrigins array
         // or if the origin is undefined (e.g., for direct server requests or Postman)
         if (allowedOrigins.indexOf(origin) > -1) {
+          console.log('allowedOrigins includes origin'););
             callback(null, true); // Allow the request
         } else {
+          console.log('Not allowed by CORS'););
             callback(new Error('Not allowed by CORS')); // Deny the request
         }
     },
@@ -50,7 +52,9 @@ app.use(cors(corsOptions));
 
 const connectDBFilter = async (req, res, next) => {
 	try {
+    console.log("Connecting to DB...");
 		await connectDB();
+    console.log("DB connected, proceeding to next middleware...");
         next();
 	} catch (error) {
 		console.error(error);

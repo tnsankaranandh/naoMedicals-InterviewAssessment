@@ -87,7 +87,7 @@ const { hashPassword, comparePassword } = require("../utils/password");
 
 
 const login = async (req, res) => {
-  console.log(1);
+  console.log(1, "in auth route login function finally!!!!!!!!!!!");
   try {
     console.log(2);
     const { email, password } = req.body;
