@@ -48,7 +48,7 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-const connectDBFilter = async (req: any, res: any, next: any) => {
+const connectDBFilter = async (req, res, next) => {
 	try {
 		await connectDB();
         next();
