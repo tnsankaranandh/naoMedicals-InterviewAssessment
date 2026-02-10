@@ -19,5 +19,17 @@ app.use("/api/messages", require("./routes/message.routes"));
 app.use("/api/summary", require("./routes/summary.routes"));
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
+// Serve static files from frontend build (when running in containerized environment)
+app.use(express.static(path.join(__dirname, "../public")));
+
+// SPA fallback - serve index.html for all non-API routes
+app.get("*", (req, res) => {
+  const indexPath = path.join(__dirname, "../public/index.html");
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      res.status(404).json({ message: "Not found" });
+    }
+  });
+});
 
 module.exports = app;
