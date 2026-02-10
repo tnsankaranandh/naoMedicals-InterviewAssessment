@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: nao-medicals-backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=${MONGODB_URI:-mongodb://mongo:27017/healthcare-chat}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key}
+      - GOOGLE_GENAI_API_KEY=${GOOGLE_GENAI_API_KEY}
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - healthcare-network
+
+  mongo:
+    image: mongo:7-alpine
+    container_name: nao-medicals-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=healthcare-chat
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - healthcare-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: nao-medicals-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_SOCKET_URL=http://localhost:5000
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - healthcare-network
+
+volumes:
+  mongo-data:
+
+networks:
+  healthcare-network:
+    driver: bridge
